@@ -1,0 +1,214 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #05080f; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #38BDF8; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Ambient Tactical Grid + Perspective Floor */
+.bg-grid-pattern {
+    background-size: 46px 46px;
+    background-image: 
+        linear-gradient(to right, rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+}
+
+/* =========================================================
+   1. GAME LOBBY BLAST DOORS & DEPLOY TRANSITION
+========================================================== */
+#welcome-overlay {
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.65s ease,
+                visibility 0.8s;
+}
+#welcome-overlay.lobby-warp-out {
+    opacity: 0;
+    transform: scale(1.28);
+    filter: blur(14px) brightness(2);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Blast Doors (Top & Bottom Tactical Shutters) */
+.blast-door-top, .blast-door-bottom {
+    transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
+    will-change: transform;
+}
+body.lobby-entered .blast-door-top {
+    transform: translateY(-105%);
+}
+body.lobby-entered .blast-door-bottom {
+    transform: translateY(105%);
+}
+
+/* Flash Burst & Screen Shake on Lobby Entry */
+@keyframes lobbyFlashBurst {
+    0% { opacity: 0.95; }
+    100% { opacity: 0; }
+}
+.lobby-flash-active {
+    animation: lobbyFlashBurst 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cameraImpactShake {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    15% { transform: translate3d(-6px, 5px, 0); }
+    30% { transform: translate3d(6px, -4px, 0); }
+    45% { transform: translate3d(-4px, -3px, 0); }
+    60% { transform: translate3d(4px, 3px, 0); }
+    75% { transform: translate3d(-2px, 2px, 0); }
+}
+.impact-shake {
+    animation: cameraImpactShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* =========================================================
+   2. LOBBY CHARACTER DROP-IN & HOLOGRAPHIC FLOOR RING
+========================================================== */
+.lobby-actor {
+    opacity: 0;
+    transform: translateY(70px) scale(0.85);
+}
+body.lobby-entered .lobby-actor-left {
+    animation: lobbySlideLeft 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+}
+body.lobby-entered .lobby-actor-card-1 {
+    animation: lobbyCharacterDrop 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+body.lobby-entered .lobby-actor-card-2 {
+    animation: lobbyCharacterDrop 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.52s forwards;
+}
+body.lobby-entered .lobby-actor-card-3 {
+    animation: lobbySlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.68s forwards;
+}
+
+@keyframes lobbySlideLeft {
+    0% { opacity: 0; transform: translateX(-65px) scale(0.95); filter: blur(8px); }
+    100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+}
+@keyframes lobbyCharacterDrop {
+    0% { opacity: 0; transform: translateY(-110px) scale(0.8) rotate(5deg); filter: blur(10px); }
+    65% { opacity: 1; transform: translateY(10px) scale(1.03) rotate(-1deg); filter: blur(0); }
+    82% { transform: translateY(-4px) scale(0.99); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); filter: blur(0); }
+}
+@keyframes lobbySlideUp {
+    0% { opacity: 0; transform: translateY(50px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Lobby Hologram Floor Ring Spin */
+@keyframes spinSlow {
+    0% { transform: rotateX(72deg) rotateZ(0deg); }
+    100% { transform: rotateX(72deg) rotateZ(360deg); }
+}
+.lobby-holo-ring {
+    animation: spinSlow 14s linear infinite;
+}
+
+/* =========================================================
+   3. DIAGONAL SHOWCASE & 3D TILT CARDS + HOLO GLARE
+========================================================== */
+.diagonal-showcase {
+    transform: rotate(-10deg) scale(0.96);
+    transform-origin: center center;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (max-width: 1024px) {
+    .diagonal-showcase { transform: rotate(-3deg) scale(0.98); }
+}
+@media (max-width: 640px) {
+    .diagonal-showcase { transform: rotate(0deg) scale(1); }
+}
+
+.phone-card {
+    background: linear-gradient(165deg, #0b142e 0%, #050a18 100%);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    transition: border-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease, transform 0.16s ease-out;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+.phone-card:hover {
+    border-color: rgba(56, 189, 248, 0.75);
+    box-shadow: 0 32px 65px -12px rgba(30, 64, 175, 0.55), inset 0 1px 0 0 rgba(56, 189, 248, 0.4);
+}
+.phone-card.active-card {
+    border-color: #38BDF8;
+    box-shadow: 0 0 50px rgba(56, 189, 248, 0.35), 0 25px 50px -12px rgba(0, 0, 0, 0.92);
+}
+.phone-card.inactive-card { opacity: 0.78; }
+.phone-card.inactive-card:hover { opacity: 1; }
+
+.tilt-card {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+}
+.tilt-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at var(--mx, 50%) var(--my, 50%),
+        rgba(56, 189, 248, 0.22),
+        transparent 58%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.tilt-card:hover::after { opacity: 1; }
+
+/* =========================================================
+   4. KINETIC SCROLL REVEAL & MOTION VELOCITY
+========================================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(48px) scale(0.95);
+    filter: blur(5px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.8s ease;
+}
+.reveal.reveal-left { transform: translateX(-55px) scale(0.96); }
+.reveal.reveal-right { transform: translateX(55px) scale(0.96); }
+.reveal.active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+}
+
+.scroll-kinetic {
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+
+/* Profile Switch Pulse */
+@keyframes hudSwitchPulse {
+    0% { opacity: 0.2; transform: translateX(-16px) scale(0.98); filter: blur(4px); }
+    100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+}
+.hud-switch-anim {
+    animation: hudSwitchPulse 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Click Shockwave Ripple */
+.click-shockwave {
+    position: fixed;
+    border-radius: 9999px;
+    border: 2px solid rgba(56, 189, 248, 0.85);
+    pointer-events: none;
+    z-index: 70;
+    transform: translate(-50%, -50%) scale(0);
+    animation: shockwaveExpand 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes shockwaveExpand {
+    0% { width: 10px; height: 10px; opacity: 1; }
+    100% { width: 110px; height: 110px; opacity: 0; }
+}
