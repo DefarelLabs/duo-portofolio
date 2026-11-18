@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUO//SYNC — Muhammad Rafly Isman × Defarel Permana | Collaborative Tech Portfolio</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#06080D',
+                        deepnavy: '#050A18',
+                        royalblue: '#1E40AF',
+                        skyblue: '#38BDF8',
+                        icewhite: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #05080f; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38BDF8; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Ambient Tactical Grid + Perspective Floor */
+        .bg-grid-pattern {
+            background-size: 46px 46px;
+            background-image: 
+                linear-gradient(to right, rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+        }
+
+        /* =========================================================
+           1. GAME LOBBY BLAST DOORS & DEPLOY TRANSITION
+        ========================================================== */
+        #welcome-overlay {
+            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.65s ease,
+                        visibility 0.8s;
+        }
+        #welcome-overlay.lobby-warp-out {
+            opacity: 0;
+            transform: scale(1.28);
+            filter: blur(14px) brightness(2);
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Blast Doors (Top & Bottom Tactical Shutters) */
+        .blast-door-top, .blast-door-bottom {
+            transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
+            will-change: transform;
+        }
+        body.lobby-entered .blast-door-top {
+            transform: translateY(-105%);
+        }
+        body.lobby-entered .blast-door-bottom {
+            transform: translateY(105%);
+        }
+
+        /* Flash Burst & Screen Shake on Lobby Entry */
+        @keyframes lobbyFlashBurst {
+            0% { opacity: 0.95; }
+            100% { opacity: 0; }
+        }
+        .lobby-flash-active {
+            animation: lobbyFlashBurst 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cameraImpactShake {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            15% { transform: translate3d(-6px, 5px, 0); }
+            30% { transform: translate3d(6px, -4px, 0); }
+            45% { transform: translate3d(-4px, -3px, 0); }
+            60% { transform: translate3d(4px, 3px, 0); }
+            75% { transform: translate3d(-2px, 2px, 0); }
+        }
+        .impact-shake {
+            animation: cameraImpactShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        /* =========================================================
+           2. LOBBY CHARACTER DROP-IN & HOLOGRAPHIC FLOOR RING
+        ========================================================== */
+        .lobby-actor {
+            opacity: 0;
+            transform: translateY(70px) scale(0.85);
+        }
+        body.lobby-entered .lobby-actor-left {
+            animation: lobbySlideLeft 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+        }
+        body.lobby-entered .lobby-actor-card-1 {
+            animation: lobbyCharacterDrop 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+        }
+        body.lobby-entered .lobby-actor-card-2 {
+            animation: lobbyCharacterDrop 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.52s forwards;
+        }
+        body.lobby-entered .lobby-actor-card-3 {
+            animation: lobbySlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.68s forwards;
+        }
+
+        @keyframes lobbySlideLeft {
+            0% { opacity: 0; transform: translateX(-65px) scale(0.95); filter: blur(8px); }
+            100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+        }
+        @keyframes lobbyCharacterDrop {
+            0% { opacity: 0; transform: translateY(-110px) scale(0.8) rotate(5deg); filter: blur(10px); }
+            65% { opacity: 1; transform: translateY(10px) scale(1.03) rotate(-1deg); filter: blur(0); }
+            82% { transform: translateY(-4px) scale(0.99); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); filter: blur(0); }
+        }
+        @keyframes lobbySlideUp {
+            0% { opacity: 0; transform: translateY(50px) scale(0.92); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Lobby Hologram Floor Ring Spin */
+        @keyframes spinSlow {
+            0% { transform: rotateX(72deg) rotateZ(0deg); }
+            100% { transform: rotateX(72deg) rotateZ(360deg); }
+        }
+        .lobby-holo-ring {
+            animation: spinSlow 14s linear infinite;
+        }
+
+        /* =========================================================
+           3. DIAGONAL SHOWCASE & 3D TILT CARDS + HOLO GLARE
+        ========================================================== */
+        .diagonal-showcase {
+            transform: rotate(-10deg) scale(0.96);
+            transform-origin: center center;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @media (max-width: 1024px) {
+            .diagonal-showcase { transform: rotate(-3deg) scale(0.98); }
+        }
+        @media (max-width: 640px) {
+            .diagonal-showcase { transform: rotate(0deg) scale(1); }
+        }
+
+        .phone-card {
+            background: linear-gradient(165deg, #0b142e 0%, #050a18 100%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+            transition: border-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease, transform 0.16s ease-out;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .phone-card:hover {
+            border-color: rgba(56, 189, 248, 0.75);
+            box-shadow: 0 32px 65px -12px rgba(30, 64, 175, 0.55), inset 0 1px 0 0 rgba(56, 189, 248, 0.4);
+        }
+        .phone-card.active-card {
+            border-color: #38BDF8;
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.35), 0 25px 50px -12px rgba(0, 0, 0, 0.92);
+        }
+        .phone-card.inactive-card { opacity: 0.78; }
+        .phone-card.inactive-card:hover { opacity: 1; }
+
+        .tilt-card {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+        .tilt-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(
+                circle at var(--mx, 50%) var(--my, 50%),
+                rgba(56, 189, 248, 0.22),
+                transparent 58%
+            );
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .tilt-card:hover::after { opacity: 1; }
+
+        /* =========================================================
+           4. KINETIC SCROLL REVEAL & MOTION VELOCITY
+        ========================================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(48px) scale(0.95);
+            filter: blur(5px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        filter 0.8s ease;
+        }
+        .reveal.reveal-left { transform: translateX(-55px) scale(0.96); }
+        .reveal.reveal-right { transform: translateX(55px) scale(0.96); }
+        .reveal.active {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1);
+            filter: blur(0);
+        }
+
+        .scroll-kinetic {
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+        }
+
+        /* Profile Switch Pulse */
+        @keyframes hudSwitchPulse {
+            0% { opacity: 0.2; transform: translateX(-16px) scale(0.98); filter: blur(4px); }
+            100% { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); }
+        }
+        .hud-switch-anim {
+            animation: hudSwitchPulse 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Click Shockwave Ripple */
+        .click-shockwave {
+            position: fixed;
+            border-radius: 9999px;
+            border: 2px solid rgba(56, 189, 248, 0.85);
+            pointer-events: none;
+            z-index: 70;
+            transform: translate(-50%, -50%) scale(0);
+            animation: shockwaveExpand 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes shockwaveExpand {
+            0% { width: 10px; height: 10px; opacity: 1; }
+            100% { width: 110px; height: 110px; opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-obsidian text-icewhite font-sans antialiased selection:bg-royalblue selection:text-white overflow-x-hidden">
+
+    <!-- Interactive Cursor Trail & Motion Canvas (Always Active Everywhere) -->
+    <canvas id="motion-trail-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-[45]"></canvas>
+
+    <!-- Tactical Cursor Reticle (Desktop) -->
+    <div id="tactical-cursor" class="hidden lg:flex items-center justify-center fixed top-0 left-0 w-9 h-9 -ml-[18px] -mt-[18px] rounded-full border border-skyblue/60 z-[60] pointer-events-none transition-transform duration-75 ease-out">
+        <span class="w-1.5 h-1.5 rounded-full bg-skyblue shadow-[0_0_8px_#38BDF8]"></span>
+    </div>
+
+    <!-- Lobby Entry Flash Overlay -->
+    <div id="lobby-flash" class="fixed inset-0 z-[56] bg-gradient-to-tr from-royalblue via-skyblue to-white pointer-events-none opacity-0"></div>
+
+    <!-- Top Game HUD Scroll Progress Bar -->
+    <div class="fixed top-0 left-0 right-0 h-[3px] z-50 bg-white/5">
+        <div id="hud-scroll-bar" class="h-full w-0 bg-gradient-to-r from-royalblue via-skyblue to-emerald-400 shadow-[0_0_12px_#38BDF8] transition-all duration-75"></div>
+    </div>
+
+    <!-- Floating Tactical Velocity / Motion Telemetry HUD (Bottom Right) -->
+    <div id="hud-telemetry" class="fixed bottom-5 right-5 z-40 hidden sm:flex items-center gap-3 px-4 py-2 rounded-2xl bg-deepnavy/90 backdrop-blur-md border border-skyblue/30 font-mono text-[10px] text-slate-300 shadow-[0_0_25px_rgba(0,0,0,0.6)] pointer-events-none">
+        <span class="flex items-center gap-1.5 text-skyblue">
+            <span id="hud-pulse-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            ARENA ACTIVE
+        </span>
+        <span class="text-slate-600">|</span>
+        <span>DEPTH: <strong id="hud-scroll-pct" class="text-white">0%</strong></span>
+        <span class="text-slate-600">|</span>
+        <span>MOTION: <strong id="hud-scroll-vel" class="text-skyblue">IDLE</strong></span>
+    </div>
+
+    <!-- =====================================================================
+         01. GAME LOBBY ENTRANCE (BLAST DOORS + HYPERSPACE + SQUAD READY)
+    ====================================================================== -->
+    <section id="welcome-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-obsidian overflow-hidden">
+        <!-- Tactical Blast Doors (Slide open dramatically when entering) -->
+        <div class="blast-door-top fixed top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-[#040711] to-deepnavy border-b border-skyblue/30 pointer-events-none z-0"></div>
+        <div class="blast-door-bottom fixed bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#040711] to-deepnavy border-t border-skyblue/30 pointer-events-none z-0"></div>
+
+        <!-- Interactive HTML5 Particle Network & Warp Canvas -->
+        <canvas id="particle-canvas" class="absolute inset-0 w-full h-full z-[1]"></canvas>
+        
+        <!-- HUD Corner Brackets -->
+        <div class="absolute top-6 left-6 w-12 h-12 border-t-2 border-l-2 border-skyblue/60 pointer-events-none z-10"></div>
+        <div class="absolute top-6 right-6 w-12 h-12 border-t-2 border-r-2 border-skyblue/60 pointer-events-none z-10"></div>
+        <div class="absolute bottom-6 left-6 w-12 h-12 border-b-2 border-l-2 border-skyblue/60 pointer-events-none z-10"></div>
+        <div class="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-skyblue/60 pointer-events-none z-10"></div>
+
+        <!-- Ambient Radial Glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] bg-royalblue/25 rounded-full blur-[140px] pointer-events-none z-[1]"></div>
+
+        <!-- Center Game Lobby Content -->
+        <div class="relative z-10 max-w-4xl mx-auto px-6 text-center flex flex-col items-center">
+            <!-- Status Badge -->
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-deepnavy/95 border border-skyblue/40 text-skyblue font-mono text-xs tracking-widest uppercase mb-6 shadow-[0_0_25px_rgba(56,189,248,0.3)]">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span id="lobby-status-text">MATCHMAKING COMPLETE // SQUAD READY</span>
+            </div>
+
+            <!-- Main Glowing Title -->
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-5 leading-tight">
+                DUO<span class="text-skyblue">//</span>SYNC
+            </h1>
+
+            <!-- Mini Player Preview Cards in Lobby -->
+            <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-5 mb-7">
+                <div class="tilt-card flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-deepnavy/95 border border-royalblue/70 shadow-xl">
+                    <img src="rafly.jpg" alt="Muhammad Rafly Isman" onerror="this.src='https://placehold.co/80x80/050a18/38bdf8?text=P1'" class="w-11 h-11 rounded-xl object-cover object-top border border-skyblue/60">
+                    <div class="text-left">
+                        <div class="font-mono text-[9px] text-skyblue uppercase flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> PLAYER 01 • LOCKED IN
+                        </div>
+                        <div class="text-xs sm:text-sm font-bold text-white">MUHAMMAD RAFLY ISMAN</div>
+                        <div class="font-mono text-[10px] text-slate-400">Network &amp; Cloud Eng.</div>
+                    </div>
+                </div>
+
+                <div class="w-9 h-9 rounded-full bg-royalblue/30 border border-skyblue/40 flex items-center justify-center text-skyblue font-mono font-bold text-base shadow-[0_0_15px_rgba(56,189,248,0.35)]">
+                    ×
+                </div>
+
+                <div class="tilt-card flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-deepnavy/95 border border-skyblue/50 shadow-xl">
+                    <img src="farel.jpg" alt="Defarel Permana" onerror="this.src='https://placehold.co/80x80/050a18/38bdf8?text=P2'" class="w-11 h-11 rounded-xl object-cover object-center border border-skyblue/60">
+                    <div class="text-left">
+                        <div class="font-mono text-[9px] text-emerald-400 uppercase flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> PLAYER 02 • LOCKED IN
+                        </div>
+                        <div class="text-xs sm:text-sm font-bold text-white">DEFAREL PERMANA</div>
+                        <div class="font-mono text-[10px] text-slate-400">IS &amp; Front-End Dev.</div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-slate-400 max-w-xl text-sm sm:text-base leading-relaxed mb-9">
+                Dua disiplin berbeda—<span class="text-skyblue font-medium">Network &amp; Cloud Infrastructure</span> dan <span class="text-skyblue font-medium">Information Systems &amp; Front-End</span>—siap masuk ke arena kolaborasi teknologi.
+            </p>
+
+            <!-- Enter Game Lobby CTA -->
+            <button id="enter-btn" onclick="enterExperience()" class="group relative inline-flex items-center gap-3 px-10 py-4 rounded-full bg-gradient-to-r from-royalblue via-blue-600 to-sky-500 text-white font-mono font-bold tracking-widest text-sm uppercase transition-all duration-300 shadow-[0_0_40px_rgba(56,189,248,0.6)] hover:shadow-[0_0_65px_rgba(56,189,248,0.95)] hover:scale-105 active:scale-95 cursor-pointer overflow-hidden">
+                <span class="relative z-10 flex items-center gap-2.5">
+                    <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+                    <span id="enter-btn-label">DEPLOY TO LOBBY</span>
+                    <i data-lucide="chevrons-right" class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5"></i>
+                </span>
+            </button>
+
+            <button onclick="enterExperience()" class="mt-5 text-xs font-mono text-slate-400 hover:text-skyblue transition-colors cursor-pointer">
+                [ TEKAN ENTER ATAU KLIK UNTUK MASUK KE LOBBY ]
+            </button>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         FLOATING PILL NAVIGATION BAR
+    ====================================================================== -->
+    <header class="fixed top-4 sm:top-6 left-0 right-0 z-40 px-4 sm:px-8 pointer-events-none">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Brand Logo (Left) -->
+            <a href="#top" class="pointer-events-auto inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-deepnavy/85 backdrop-blur-md border border-white/10 hover:border-skyblue/50 transition-all shadow-lg group">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-royalblue to-skyblue flex items-center justify-center font-mono font-bold text-xs text-white shadow group-hover:rotate-12 transition-transform">
+                    D/S
+                </div>
+                <span class="font-bold tracking-tight text-sm sm:text-base text-white">DUO<span class="text-skyblue">//</span>SYNC<span class="text-royalblue">.</span></span>
+            </a>
+
+            <!-- Center Floating Pill Menu (Desktop) -->
+            <nav aria-label="Primary Navigation" class="pointer-events-auto hidden md:flex items-center gap-1 px-2 py-1.5 rounded-full bg-deepnavy/85 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+                <a href="#identity" class="nav-link px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all">Identity</a>
+                <a href="#journey" class="nav-link px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all">Journey</a>
+                <a href="#gallery" class="nav-link px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all">Gallery</a>
+                <a href="#projects" class="nav-link px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all">Projects</a>
+                <a href="#roadmap" class="nav-link px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all">Roadmap</a>
+                <a href="#contact" class="nav-link px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all">Contact</a>
+            </nav>
+
+            <!-- Right CTA & Replay Lobby Button -->
+            <div class="pointer-events-auto flex items-center gap-2">
+                <button onclick="reopenSplash()" title="Ulangi Animasi Masuk Lobby" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-deepnavy/85 backdrop-blur-md border border-white/10 text-xs font-mono text-slate-300 hover:text-skyblue hover:border-skyblue/50 transition-all cursor-pointer">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    <span>Lobby FX</span>
+                </button>
+                <a href="#contact" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-royalblue hover:bg-blue-600 text-white text-xs sm:text-sm font-semibold shadow-[0_0_20px_rgba(29,78,216,0.5)] hover:shadow-[0_0_28px_rgba(56,189,248,0.65)] transition-all hover:scale-105">
+                    <span>Let's Collaborate</span>
+                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </a>
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full bg-deepnavy/90 border border-white/10 text-white cursor-pointer">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Pill -->
+        <div id="mobile-menu" class="pointer-events-auto hidden md:hidden mt-3 max-w-md mx-auto rounded-3xl bg-deepnavy/95 backdrop-blur-xl border border-white/10 p-4 shadow-2xl">
+            <div class="grid grid-cols-2 gap-2">
+                <a href="#identity" onclick="toggleMobileMenu()" class="px-4 py-2.5 rounded-2xl text-xs font-medium text-slate-200 hover:bg-royalblue/20 hover:text-skyblue transition">02. Identity</a>
+                <a href="#journey" onclick="toggleMobileMenu()" class="px-4 py-2.5 rounded-2xl text-xs font-medium text-slate-200 hover:bg-royalblue/20 hover:text-skyblue transition">03. Journey</a>
+                <a href="#gallery" onclick="toggleMobileMenu()" class="px-4 py-2.5 rounded-2xl text-xs font-medium text-slate-200 hover:bg-royalblue/20 hover:text-skyblue transition">04. Gallery</a>
+                <a href="#projects" onclick="toggleMobileMenu()" class="px-4 py-2.5 rounded-2xl text-xs font-medium text-slate-200 hover:bg-royalblue/20 hover:text-skyblue transition">05. Projects</a>
+                <a href="#roadmap" onclick="toggleMobileMenu()" class="px-4 py-2.5 rounded-2xl text-xs font-medium text-slate-200 hover:bg-royalblue/20 hover:text-skyblue transition">06. Roadmap</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="px-4 py-2.5 rounded-2xl text-xs font-medium text-slate-200 hover:bg-royalblue/20 hover:text-skyblue transition">07. Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- =====================================================================
+         MAIN CONTENT WRAPPER
+    ====================================================================== -->
+    <main id="top" class="relative bg-grid-pattern">
+        
+        <!-- Ambient Parallax Orbs (Move dynamically on cursor & scroll) -->
+        <div data-parallax="0.22" class="parallax-orb absolute top-0 left-1/4 w-[600px] h-[400px] bg-royalblue/15 rounded-full blur-[140px] pointer-events-none"></div>
+        <div data-parallax="-0.18" class="parallax-orb absolute top-40 right-10 w-[500px] h-[500px] bg-skyblue/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <!-- =================================================================
+             HERO & 02. THE IDENTITY (GAME LOBBY CHARACTER ARENA)
+        ================================================================== -->
+        <section id="identity" class="relative min-h-screen pt-28 pb-20 lg:pt-32 lg:pb-28 flex items-center overflow-hidden border-b border-white/5">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 w-full">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                    
+                    <!-- LEFT COLUMN: Lobby Character Info & Switcher -->
+                    <div class="lg:col-span-6 z-10 lobby-actor lobby-actor-left">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-deepnavy border border-skyblue/30 text-skyblue font-mono text-xs mb-6 shadow">
+                            <span class="w-2 h-2 rounded-full bg-skyblue animate-pulse"></span>
+                            <span>02 // CHARACTER SELECT</span>
+                            <span class="text-slate-600">•</span>
+                            <span class="text-slate-300">DUO LOBBY</span>
+                        </div>
+
+                        <!-- Massive Modern Display Typography -->
+                        <h2 id="hero-display-name" class="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight text-white leading-[1.06] mb-4">
+                            Muhammad<br>
+                            Rafly Isman<span class="text-skyblue">.</span>
+                        </h2>
+
+                        <p class="text-base sm:text-lg text-slate-400 font-medium mb-7 max-w-lg leading-relaxed">
+                            Kolaborasi <span class="text-white font-semibold">Informatika</span> &amp; <span class="text-white font-semibold">Sistem Informasi</span>. Menyatukan ketangguhan infrastruktur jaringan dengan presisi desain sistem dan pengalaman pengguna.
+                        </p>
+
+                        <!-- Interactive Player Switcher Pills -->
+                        <div class="inline-flex flex-wrap p-1.5 rounded-full bg-deepnavy border border-white/10 mb-7 shadow-inner gap-1">
+                            <button id="btn-select-rafly" onclick="selectIdentity('rafly')" class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-royalblue text-white shadow-md cursor-pointer">
+                                P1. Muhammad Rafly Isman
+                            </button>
+                            <button id="btn-select-defarel" onclick="selectIdentity('defarel')" class="px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white cursor-pointer">
+                                P2. Defarel Permana
+                            </button>
+                        </div>
+
+                        <!-- Dynamic Identity Detail Panel -->
+                        <div id="identity-detail-box" class="tilt-card p-6 rounded-3xl bg-deepnavy/90 backdrop-blur-md border border-white/10 mb-8">
+                            <div class="flex items-start justify-between gap-4 mb-3">
+                                <div>
+                                    <span id="id-badge" class="inline-block font-mono text-[11px] uppercase tracking-wider text-skyblue bg-skyblue/10 px-2.5 py-0.5 rounded-md mb-1.5">
+                                        S1 INFORMATIKA • INFRASTRUCTURE &amp; SECURITY
+                                    </span>
+                                    <h3 id="id-fullname" class="text-xl sm:text-2xl font-bold text-white">Muhammad Rafly Isman — Network &amp; Cloud Specialist</h3>
+                                </div>
+                                <div class="flex gap-1.5 shrink-0">
+                                    <button onclick="prevIdentity()" aria-label="Previous Profile" class="w-9 h-9 rounded-full bg-white/5 hover:bg-royalblue/50 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-90 cursor-pointer">
+                                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="nextIdentity()" aria-label="Next Profile" class="w-9 h-9 rounded-full bg-white/5 hover:bg-royalblue/50 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-90 cursor-pointer">
+                                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p id="id-summary" class="text-sm text-slate-300 leading-relaxed mb-4">
+                                Berfokus pada arsitektur jaringan skala enterprise, virtualisasi server, otomasi cloud, serta pertahanan keamanan siber berbasis lab dan pengalaman infrastruktur nyata.
+                            </p>
+                            <!-- Core Pillars -->
+                            <div id="id-pillars" class="space-y-2 text-xs sm:text-sm text-slate-200 font-medium">
+                                <div class="flex items-center gap-2.5">
+                                    <i data-lucide="server" class="w-4 h-4 text-skyblue shrink-0"></i>
+                                    <span>Routing, Switching, VLAN &amp; Enterprise Network Lab (Cisco/MikroTik)</span>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <i data-lucide="cloud" class="w-4 h-4 text-skyblue shrink-0"></i>
+                                    <span>Linux Server Administration, Docker &amp; Cloud Deployment</span>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-skyblue shrink-0"></i>
+                                    <span>Firewall Hardening, Network Monitoring &amp; Cybersecurity</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-3.5">
+                            <a href="#journey" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-royalblue hover:bg-blue-600 text-white text-sm font-semibold shadow-[0_0_25px_rgba(30,64,175,0.55)] hover:scale-105 transition-all">
+                                <span>Explore Journey</span>
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                            <a href="#gallery" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-deepnavy hover:bg-slate-900 text-white border border-white/15 hover:border-skyblue/40 text-sm font-semibold hover:scale-105 transition-all">
+                                <i data-lucide="images" class="w-4 h-4 text-skyblue"></i>
+                                <span>View Evidence</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: Diagonal / Angled 3D Interactive Player Cards + Holo Pedestal -->
+                    <div class="lg:col-span-6 relative flex items-center justify-center py-6 lg:py-0">
+                        <!-- Holographic Pedestal Ring Underneath Characters -->
+                        <div class="lobby-holo-ring absolute -bottom-10 w-[440px] h-[440px] rounded-full border-2 border-dashed border-skyblue/30 shadow-[0_0_60px_rgba(56,189,248,0.2)] pointer-events-none"></div>
+
+                        <div class="diagonal-showcase grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-xl">
+                            
+                            <!-- CARD 1: PLAYER 01 - MUHAMMAD RAFLY ISMAN -->
+                            <div class="lobby-actor lobby-actor-card-1">
+                                <div id="card-rafly" onclick="selectIdentity('rafly')" class="phone-card tilt-card active-card rounded-[2rem] p-4 sm:p-5 cursor-pointer relative overflow-hidden group">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-3">
+                                        <span class="text-skyblue font-bold">PLAYER // 01</span>
+                                        <span class="px-2 py-0.5 rounded-full bg-royalblue/30 text-skyblue border border-skyblue/30">INFORMATIKA</span>
+                                    </div>
+
+                                    <!-- Real Portrait Photo: Muhammad Rafly Isman -->
+                                    <div class="relative w-full h-56 sm:h-60 rounded-2xl overflow-hidden mb-3.5 bg-obsidian border border-white/10">
+                                        <img src="rafly.jpg" 
+                                             alt="Foto Profil Muhammad Rafly Isman" 
+                                             onerror="this.src='https://placehold.co/400x460/050a18/38bdf8?text=Muhammad+Rafly+Isman'"
+                                             class="w-full h-full object-cover object-top group-hover:scale-108 transition-transform duration-500">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent"></div>
+                                        <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
+                                            <div>
+                                                <p class="text-white font-bold text-sm sm:text-base leading-tight">Muhammad Rafly Isman</p>
+                                                <p class="text-skyblue font-mono text-[11px]">Network &amp; Cloud Eng.</p>
+                                            </div>
+                                            <span class="w-8 h-8 rounded-full bg-royalblue/90 backdrop-blur flex items-center justify-center text-white shrink-0 shadow">
+                                                <i data-lucide="cpu" class="w-4 h-4"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-xl bg-obsidian/90 border border-white/5 p-3 font-mono text-[11px] space-y-1.5">
+                                        <div class="flex justify-between text-slate-400">
+                                            <span>CLASS:</span>
+                                            <span class="text-icewhite">Infra • Cloud • Sec</span>
+                                        </div>
+                                        <div class="flex justify-between text-slate-400">
+                                            <span>STATUS:</span>
+                                            <span id="status-rafly" class="text-emerald-400">● SELECTED PLAYER</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CARD 2: PLAYER 02 - DEFAREL PERMANA -->
+                            <div class="lobby-actor lobby-actor-card-2 sm:translate-y-10">
+                                <div id="card-defarel" onclick="selectIdentity('defarel')" class="phone-card tilt-card inactive-card rounded-[2rem] p-4 sm:p-5 cursor-pointer relative overflow-hidden group">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-3">
+                                        <span class="text-skyblue font-bold">PLAYER // 02</span>
+                                        <span class="px-2 py-0.5 rounded-full bg-skyblue/20 text-skyblue border border-skyblue/30">SISTEM INFORMASI</span>
+                                    </div>
+
+                                    <!-- Real Portrait Photo: Defarel Permana -->
+                                    <div class="relative w-full h-56 sm:h-60 rounded-2xl overflow-hidden mb-3.5 bg-obsidian border border-white/10">
+                                        <img src="farel.jpg" 
+                                             alt="Foto Profil Defarel Permana" 
+                                             onerror="this.src='https://placehold.co/400x460/050a18/38bdf8?text=Defarel+Permana'"
+                                             class="w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-500">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent"></div>
+                                        <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
+                                            <div>
+                                                <p class="text-white font-bold text-sm sm:text-base leading-tight">Defarel Permana</p>
+                                                <p class="text-skyblue font-mono text-[11px]">IS &amp; Front-End Dev.</p>
+                                            </div>
+                                            <span class="w-8 h-8 rounded-full bg-skyblue/20 border border-skyblue/40 backdrop-blur flex items-center justify-center text-skyblue shrink-0 shadow">
+                                                <i data-lucide="layout-template" class="w-4 h-4"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-xl bg-obsidian/90 border border-white/5 p-3 font-mono text-[11px] space-y-1.5">
+                                        <div class="flex justify-between text-slate-400">
+                                            <span>CLASS:</span>
+                                            <span class="text-icewhite">IS • BizTech • UI/UX</span>
+                                        </div>
+                                        <div class="flex justify-between text-slate-400">
+                                            <span>STATUS:</span>
+                                            <span id="status-defarel" class="text-skyblue">○ CLICK TO SELECT</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CARD 3: SQUAD SYNERGY BRIDGE -->
+                            <div class="lobby-actor lobby-actor-card-3 sm:col-span-2 sm:mt-8">
+                                <div class="phone-card tilt-card rounded-3xl p-4 sm:p-5 bg-gradient-to-r from-deepnavy via-[#0c1838] to-deepnavy">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div class="flex items-start gap-3.5">
+                                            <div class="w-11 h-11 rounded-2xl bg-royalblue/30 border border-skyblue/40 flex items-center justify-center text-skyblue shrink-0 mt-0.5">
+                                                <i data-lucide="shield" class="w-5 h-5"></i>
+                                            </div>
+                                            <div>
+                                                <div id="about-card-label" class="font-mono text-[10px] text-skyblue uppercase tracking-wider">LOADOUT // MUHAMMAD RAFLY ISMAN</div>
+                                                <div id="about-card-title" class="text-sm font-bold text-white">Infrastructure &amp; Security Engineering</div>
+                                                <p id="about-card-text" class="text-xs text-slate-400 mt-0.5 leading-relaxed">
+                                                    Fokus pada keandalan jaringan, Linux server, dan keamanan infrastruktur untuk menopang aplikasi modern.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <a href="#journey" class="px-4 py-2 rounded-xl bg-royalblue/80 hover:bg-royalblue text-xs font-mono text-white border border-skyblue/30 transition shrink-0 self-start sm:self-center">
+                                            Deploy →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================================
+             03. OUR JOURNEY (SPLIT-SCREEN DOMAIN COMPARISON)
+        ================================================================== -->
+        <section id="journey" class="py-24 relative border-b border-white/5">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8">
+                
+                <!-- Section Header -->
+                <div class="reveal max-w-3xl mb-14">
+                    <span class="font-mono text-xs text-skyblue tracking-widest uppercase block mb-2">03 // OUR JOURNEY</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                        Dua Jalur Keahlian,<br><span class="text-skyblue">Satu Ekosistem Kolaborasi.</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                        Kami percaya kolaborasi terbaik lahir ketika fondasi infrastruktur yang kuat bertemu dengan sistem informasi yang terstruktur dan mudah digunakan. Berikut rekam jejak pembelajaran dan praktik nyata kami.
+                    </p>
+                </div>
+
+                <!-- Split-Screen Comparison Cards with Scroll-Velocity Motion -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 scroll-kinetic">
+                    
+                    <!-- RAFLY JOURNEY CARD -->
+                    <div class="reveal reveal-left tilt-card group rounded-3xl bg-deepnavy/75 border border-white/10 hover:border-royalblue/70 p-7 sm:p-9 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-48 h-48 bg-royalblue/15 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <div class="flex items-center gap-3.5">
+                                <img src="rafly.jpg" alt="Muhammad Rafly Isman" onerror="this.src='https://placehold.co/100x100/050a18/38bdf8?text=R'" class="w-14 h-14 rounded-2xl object-cover object-top border border-royalblue/60 shadow-md">
+                                <div>
+                                    <h3 class="text-xl sm:text-2xl font-bold text-white">Muhammad Rafly Isman</h3>
+                                    <p class="font-mono text-xs text-skyblue">Program Studi: Informatika</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-obsidian border border-white/10 font-mono text-xs text-slate-300">
+                                INFRA &amp; SECURITY TRACK
+                            </span>
+                        </div>
+
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            Mendalami bagaimana data mengalir secara aman, cepat, dan andal dari tingkat perangkat keras jaringan hingga lingkungan komputasi awan (Cloud), diperkuat pengalaman praktik infrastruktur IT dan lab jaringan.
+                        </p>
+
+                        <div class="space-y-4 mb-7">
+                            <div class="p-4 rounded-2xl bg-obsidian/80 border border-white/5 hover:border-skyblue/30 transition-colors">
+                                <div class="flex items-center gap-2 text-white font-semibold text-sm mb-1">
+                                    <i data-lucide="router" class="w-4 h-4 text-skyblue"></i>
+                                    <span>Network Infrastructure</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Perancangan topologi jaringan multi-segmen (VLAN, Inter-VLAN Routing, OSPF, BGP dasar), manajemen bandwidth, serta simulasi Enterprise Lab menggunakan Cisco Packet Tracer &amp; GNS3.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-obsidian/80 border border-white/5 hover:border-skyblue/30 transition-colors">
+                                <div class="flex items-center gap-2 text-white font-semibold text-sm mb-1">
+                                    <i data-lucide="cloud-cog" class="w-4 h-4 text-skyblue"></i>
+                                    <span>Cloud &amp; Server Administration</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Administrasi Linux Server (Ubuntu/Debian), kontainerisasi aplikasi dengan Docker, Reverse Proxy (Nginx), serta manajemen VPS untuk deployment aplikasi web.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-obsidian/80 border border-white/5 hover:border-skyblue/30 transition-colors">
+                                <div class="flex items-center gap-2 text-white font-semibold text-sm mb-1">
+                                    <i data-lucide="shield-alert" class="w-4 h-4 text-skyblue"></i>
+                                    <span>Cybersecurity &amp; Monitoring</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Konfigurasi Firewall (UFW/iptables), analisis paket jaringan dengan Wireshark, SSH hardening, dan pemantauan uptime server secara real-time.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 rounded-lg bg-royalblue/15 border border-royalblue/30 text-skyblue font-mono text-xs">Cisco / MikroTik</span>
+                            <span class="px-3 py-1 rounded-lg bg-royalblue/15 border border-royalblue/30 text-skyblue font-mono text-xs">Linux Server</span>
+                            <span class="px-3 py-1 rounded-lg bg-royalblue/15 border border-royalblue/30 text-skyblue font-mono text-xs">Docker &amp; Nginx</span>
+                            <span class="px-3 py-1 rounded-lg bg-royalblue/15 border border-royalblue/30 text-skyblue font-mono text-xs">Wireshark</span>
+                        </div>
+                    </div>
+
+                    <!-- DEFAREL JOURNEY CARD -->
+                    <div class="reveal reveal-right tilt-card group rounded-3xl bg-deepnavy/75 border border-white/10 hover:border-skyblue/70 p-7 sm:p-9 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-48 h-48 bg-skyblue/10 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                            <div class="flex items-center gap-3.5">
+                                <img src="farel.jpg" alt="Defarel Permana" onerror="this.src='https://placehold.co/100x100/050a18/38bdf8?text=D'" class="w-14 h-14 rounded-2xl object-cover object-center border border-skyblue/60 shadow-md">
+                                <div>
+                                    <h3 class="text-xl sm:text-2xl font-bold text-white">Defarel Permana</h3>
+                                    <p class="font-mono text-xs text-skyblue">Program Studi: Sistem Informasi</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-obsidian border border-white/10 font-mono text-xs text-slate-300">
+                                IS &amp; FRONT-END TRACK
+                            </span>
+                        </div>
+
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            Menjembatani kebutuhan bisnis dan pengguna menjadi sistem informasi yang terstruktur, efisien, dan memiliki antarmuka web modern yang intuitif.
+                        </p>
+
+                        <div class="space-y-4 mb-7">
+                            <div class="p-4 rounded-2xl bg-obsidian/80 border border-white/5 hover:border-skyblue/30 transition-colors">
+                                <div class="flex items-center gap-2 text-white font-semibold text-sm mb-1">
+                                    <i data-lucide="database" class="w-4 h-4 text-skyblue"></i>
+                                    <span>Information Systems Analysis</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Pemodelan proses bisnis (BPMN), perancangan arsitektur basis data relasional (ERD, Normalisasi SQL), serta penyusunan dokumen kebutuhan sistem (SRS).
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-obsidian/80 border border-white/5 hover:border-skyblue/30 transition-colors">
+                                <div class="flex items-center gap-2 text-white font-semibold text-sm mb-1">
+                                    <i data-lucide="briefcase" class="w-4 h-4 text-skyblue"></i>
+                                    <span>Business Technology Integration</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Digitalisasi alur operasional organisasi, perancangan dashboard analitik pengambilan keputusan, serta evaluasi efisiensi proses berbasis teknologi.
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-obsidian/80 border border-white/5 hover:border-skyblue/30 transition-colors">
+                                <div class="flex items-center gap-2 text-white font-semibold text-sm mb-1">
+                                    <i data-lucide="code-2" class="w-4 h-4 text-skyblue"></i>
+                                    <span>Front-End Engineering &amp; UI/UX</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Implementasi antarmuka web responsif menggunakan HTML5, Tailwind CSS, JavaScript modern, dan integrasi REST API dengan prinsip aksesibilitas tinggi.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 rounded-lg bg-skyblue/10 border border-skyblue/30 text-skyblue font-mono text-xs">System Analysis</span>
+                            <span class="px-3 py-1 rounded-lg bg-skyblue/10 border border-skyblue/30 text-skyblue font-mono text-xs">UI/UX &amp; Figma</span>
+                            <span class="px-3 py-1 rounded-lg bg-skyblue/10 border border-skyblue/30 text-skyblue font-mono text-xs">Tailwind &amp; JS</span>
+                            <span class="px-3 py-1 rounded-lg bg-skyblue/10 border border-skyblue/30 text-skyblue font-mono text-xs">SQL &amp; BPMN</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================================
+             04. DOCUMENTATION GALLERY (KINETIC CAROUSEL + LIGHTBOX)
+        ================================================================== -->
+        <section id="gallery" class="py-24 relative border-b border-white/5 bg-deepnavy/25">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8">
+                
+                <!-- Header + Navigation Controls -->
+                <div class="reveal flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+                    <div>
+                        <span class="font-mono text-xs text-skyblue tracking-widest uppercase block mb-2">04 // DOCUMENTATION GALLERY</span>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-3">
+                            Bukti Nyata, <span class="text-skyblue">Bukan Sekadar Angka.</span>
+                        </h2>
+                        <p class="text-slate-400 text-sm sm:text-base max-w-2xl">
+                            Dokumentasi proses belajar, simulasi konfigurasi jaringan, rancangan sistem informasi, sertifikasi, dan aktivitas kolaborasi teknis kami. Geser atau klik kartu untuk inspeksi detail.
+                        </p>
+                    </div>
+
+                    <!-- Carousel Prev/Next Buttons -->
+                    <div class="flex items-center gap-3 shrink-0">
+                        <button onclick="scrollGallery(-1)" aria-label="Geser Kiri" class="w-11 h-11 rounded-full bg-deepnavy border border-white/15 hover:border-skyblue hover:bg-royalblue/40 flex items-center justify-center text-white transition active:scale-90 cursor-pointer">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="scrollGallery(1)" aria-label="Geser Kanan" class="w-11 h-11 rounded-full bg-deepnavy border border-white/15 hover:border-skyblue hover:bg-royalblue/40 flex items-center justify-center text-white transition active:scale-90 cursor-pointer">
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Filter Buttons -->
+                <div class="reveal flex flex-wrap gap-2.5 mb-8" id="gallery-filters">
+                    <button onclick="filterGallery('all', this)" class="gallery-filter-btn active px-4 py-2 rounded-full text-xs font-semibold bg-royalblue text-white border border-royalblue transition cursor-pointer">
+                        Semua Dokumentasi
+                    </button>
+                    <button onclick="filterGallery('network', this)" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer">
+                        Simulasi Jaringan &amp; Server
+                    </button>
+                    <button onclick="filterGallery('certificate', this)" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer">
+                        Sertifikat &amp; Belajar
+                    </button>
+                    <button onclick="filterGallery('work', this)" class="gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer">
+                        Aktivitas &amp; Hasil Kerja
+                    </button>
+                </div>
+
+                <!-- Horizontal Draggable / Scrollable Gallery Track -->
+                <div id="gallery-track" class="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-6 pt-2 scroll-smooth">
+                    <!-- Rendered dynamically via JS -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =================================================================
+             05. ACHIEVEMENT & PROJECTS (TAB FILTER + 3D CASE STUDIES)
+        ================================================================== -->
+        <section id="projects" class="py-24 relative border-b border-white/5">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8">
+                
+                <!-- Header -->
+                <div class="reveal text-center max-w-3xl mx-auto mb-12">
+                    <span class="font-mono text-xs text-skyblue tracking-widest uppercase block mb-2">05 // ACHIEVEMENT &amp; PROJECTS</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                        Karya Individu &amp; <span class="text-skyblue">Sinergi Kolaborasi</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        Eksplorasi studi kasus nyata yang dibangun secara mandiri sesuai spesialisasi maupun proyek terintegrasi hasil kolaborasi Rafly dan Defarel.
+                    </p>
+                </div>
+
+                <!-- Project Filter Tabs -->
+                <div class="reveal flex flex-wrap items-center justify-center gap-3 mb-12">
+                    <button onclick="filterProjects('all', this)" class="project-tab-btn active px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-royalblue text-white shadow-lg transition cursor-pointer">
+                        All (6)
+                    </button>
+                    <button onclick="filterProjects('duo', this)" class="project-tab-btn px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer">
+                        Duo Collaboration
+                    </button>
+                    <button onclick="filterProjects('rafly', this)" class="project-tab-btn px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer">
+                        Muhammad Rafly Isman
+                    </button>
+                    <button onclick="filterProjects('defarel', this)" class="project-tab-btn px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer">
+                        Defarel Permana
+                    </button>
+                </div>
+
+                <!-- Projects Grid -->
+                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 scroll-kinetic">
+                    <!-- Rendered dynamically via JS -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =================================================================
+             06. FUTURE ROADMAP (3 CAREER & COLLABORATION TRACKS)
+        ================================================================== -->
+        <section id="roadmap" class="py-24 relative border-b border-white/5 bg-deepnavy/25">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8">
+                
+                <!-- Header -->
+                <div class="reveal max-w-3xl mb-14">
+                    <span class="font-mono text-xs text-skyblue tracking-widest uppercase block mb-2">06 // FUTURE ROADMAP</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                        Peta Jalan Karier &amp; <span class="text-skyblue">Visi Jangka Panjang</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        Arah pengembangan kompetensi profesional masing-masing individu serta titik temu kolaborasi kami dalam membangun solusi teknologi berskala enterprise.
+                    </p>
+                </div>
+
+                <!-- 3 Roadmap Tracks Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-7 scroll-kinetic">
+                    
+                    <!-- TRACK 1: RAFLY ROADMAP -->
+                    <div class="reveal tilt-card rounded-3xl bg-deepnavy/80 border border-white/10 hover:border-royalblue/60 p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="px-3 py-1 rounded-full bg-royalblue/20 border border-royalblue/40 font-mono text-xs text-skyblue">JALUR 01</span>
+                                <i data-lucide="server-cog" class="w-5 h-5 text-skyblue"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-1">Muhammad Rafly Isman</h3>
+                            <p class="text-xs font-mono text-skyblue mb-6">Network &amp; Cloud Engineer Track</p>
+
+                            <div class="relative pl-6 border-l-2 border-royalblue/50 space-y-6">
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-skyblue ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-skyblue">STEP 01 • FOUNDATION</div>
+                                    <h4 class="text-base font-bold text-white">Network Engineer</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Perancangan jaringan enterprise, routing dinamis, VLAN, dan troubleshooting konektivitas.</p>
+                                </div>
+
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-royalblue ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-slate-400">STEP 02 • SCALING</div>
+                                    <h4 class="text-base font-bold text-white">Infrastructure Engineer</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Virtualisasi server, sistem operasi Linux enterprise, otomasi deployment, dan high-availability.</p>
+                                </div>
+
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-royalblue ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-slate-400">STEP 03 • CLOUD NATIVE</div>
+                                    <h4 class="text-base font-bold text-white">Cloud Engineer</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Arsitektur cloud hybrid/multi-cloud, kontainer orkestrasi, Infrastructure as Code (IaC), &amp; keamanan cloud.</p>
+                                </div>
+
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-white/30 ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-slate-400">STEP 04 • ARCHITECTURE</div>
+                                    <h4 class="text-base font-bold text-white">Network Architect</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Merancang cetak biru infrastruktur jaringan skala besar yang aman, resilien, dan efisien biaya.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TRACK 2: DEFAREL ROADMAP -->
+                    <div class="reveal tilt-card rounded-3xl bg-deepnavy/80 border border-white/10 hover:border-skyblue/60 p-7 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="px-3 py-1 rounded-full bg-skyblue/15 border border-skyblue/30 font-mono text-xs text-skyblue">JALUR 02</span>
+                                <i data-lucide="blocks" class="w-5 h-5 text-skyblue"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-1">Defarel Permana</h3>
+                            <p class="text-xs font-mono text-skyblue mb-6">Information Systems Professional Track</p>
+
+                            <div class="relative pl-6 border-l-2 border-skyblue/40 space-y-6">
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-skyblue ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-skyblue">STEP 01 • INTERFACE</div>
+                                    <h4 class="text-base font-bold text-white">Front-End Developer</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Membangun antarmuka web modern yang responsif, interaktif, dan berorientasi pengalaman pengguna.</p>
+                                </div>
+
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-royalblue ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-slate-400">STEP 02 • SYSTEM DESIGN</div>
+                                    <h4 class="text-base font-bold text-white">Systems Analyst</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Menerjemahkan kebutuhan operasional menjadi spesifikasi teknis, alur data, dan arsitektur database.</p>
+                                </div>
+
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-royalblue ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-slate-400">STEP 03 • STRATEGY</div>
+                                    <h4 class="text-base font-bold text-white">IT Business Analyst</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Menyelaraskan investasi teknologi dengan tujuan bisnis perusahaan melalui analisis proses dan data.</p>
+                                </div>
+
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-white/30 ring-4 ring-deepnavy"></span>
+                                    <div class="text-[11px] font-mono text-slate-400">STEP 04 • ENTERPRISE</div>
+                                    <h4 class="text-base font-bold text-white">IT Solution Architect</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Merancang solusi sistem informasi terpadu end-to-end untuk transformasi digital organisasi.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TRACK 3: DUO//SYNC COLLABORATION VISION -->
+                    <div class="reveal tilt-card rounded-3xl bg-gradient-to-b from-[#0f1d45] to-deepnavy border border-skyblue/40 p-7 flex flex-col justify-between shadow-[0_0_40px_rgba(29,78,216,0.2)]">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="px-3 py-1 rounded-full bg-royalblue text-white font-mono text-xs font-semibold">JALUR 03 • SYNERGY</span>
+                                <i data-lucide="sparkles" class="w-5 h-5 text-skyblue"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-1">DUO//SYNC Collaboration</h3>
+                            <p class="text-xs font-mono text-skyblue mb-6">Integrated Digital &amp; Infrastructure Solutions</p>
+
+                            <p class="text-sm text-slate-200 leading-relaxed mb-6">
+                                Menggabungkan keahlian <strong>Network &amp; Cloud Architect</strong> dengan <strong>IT Solution Architect</strong> untuk menghadirkan solusi teknologi yang utuh dari hulu ke hilir.
+                            </p>
+
+                            <div class="space-y-4">
+                                <div class="p-4 rounded-2xl bg-obsidian/70 border border-skyblue/20">
+                                    <div class="font-mono text-xs text-skyblue mb-1">01 // FULL-STACK INFRASTRUCTURE</div>
+                                    <p class="text-xs text-slate-300 leading-relaxed">
+                                        Defarel merancang aplikasi web &amp; sistem bisnis, sementara Rafly menyiapkan server cloud, keamanan jaringan, dan pipeline deployment-nya.
+                                    </p>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-obsidian/70 border border-skyblue/20">
+                                    <div class="font-mono text-xs text-skyblue mb-1">02 // SMART MONITORING &amp; DASHBOARD</div>
+                                    <p class="text-xs text-slate-300 leading-relaxed">
+                                        Membangun sistem pemantauan infrastruktur jaringan berbasis web dengan visualisasi data real-time untuk instansi maupun UMKM.
+                                    </p>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-obsidian/70 border border-skyblue/20">
+                                    <div class="font-mono text-xs text-skyblue mb-1">03 // RESEARCH &amp; TECH SHARING</div>
+                                    <p class="text-xs text-slate-300 leading-relaxed">
+                                        Aktif berbagi dokumentasi riset, studi kasus lab, serta terbuka untuk proyek kolaborasi akademik maupun industri.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between text-xs font-mono text-skyblue">
+                            <span>STATUS: OPEN FOR COLLABORATION</span>
+                            <span>2026 → BEYOND</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================================
+             07. CONTACT & COLLABORATION
+        ================================================================== -->
+        <section id="contact" class="py-24 relative overflow-hidden">
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-royalblue/20 rounded-full blur-[130px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 relative z-10">
+                <div class="reveal rounded-[2.5rem] bg-gradient-to-br from-deepnavy via-[#0c1636] to-obsidian border border-white/15 p-8 sm:p-12 lg:p-16 shadow-2xl">
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                        <!-- Left Pitch -->
+                        <div class="lg:col-span-6">
+                            <span class="font-mono text-xs text-skyblue tracking-widest uppercase block mb-3">07 // CONTACT &amp; COLLABORATION</span>
+                            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight mb-5">
+                                Mari Bangun Sesuatu yang <span class="text-skyblue">Berdampak Bersama.</span>
+                            </h2>
+                            <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                                Terbuka untuk peluang <strong>Internship, Project Collaboration, Riset Akademik, Freelance Web &amp; Network Infrastructure</strong>, maupun diskusi teknologi bersama recruiter, dosen, dan rekan developer.
+                            </p>
+
+                            <!-- Quick Copy Email Toast Trigger -->
+                            <div class="inline-flex flex-wrap items-center gap-3 p-2 pl-4 rounded-2xl bg-obsidian/90 border border-white/10">
+                                <span class="font-mono text-xs sm:text-sm text-slate-300">duosync.collab@gmail.com</span>
+                                <button onclick="copyCollabEmail()" class="px-3.5 py-2 rounded-xl bg-royalblue hover:bg-blue-600 text-white text-xs font-semibold transition flex items-center gap-1.5 active:scale-95 cursor-pointer">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                    <span id="copy-label">Salin Email</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Contact Cards for Rafly & Defarel -->
+                        <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            
+                            <!-- RAFLY CONTACT CARD -->
+                            <div class="tilt-card rounded-3xl bg-obsidian/90 border border-white/10 hover:border-royalblue/60 p-6 transition">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <img src="rafly.jpg" alt="Muhammad Rafly Isman" onerror="this.src='https://placehold.co/80x80/050a18/38bdf8?text=R'" class="w-11 h-11 rounded-xl object-cover object-top border border-royalblue/60">
+                                    <div>
+                                        <h3 class="font-bold text-white text-sm sm:text-base leading-tight">Muhammad Rafly Isman</h3>
+                                        <p class="font-mono text-[11px] text-slate-400">Network &amp; Cloud Eng.</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2.5">
+                                    <a href="mailto:ismanrafly@gmail.com?subject=Kolaborasi%20DUO//SYNC%20-%20Muhammad%20Rafly%20Isman" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-royalblue/25 border border-white/5 hover:border-skyblue/40 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-skyblue"></i> ismanrafly@gmail.com</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                    <a href="https://wa.me/6281200000001?text=Halo%20Muhammad%20Rafly%20Isman,%20saya%20tertarik%20berkolaborasi%20melalui%20portofolio%20DUO//SYNC" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-400/40 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i> WhatsApp</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-white/10 border border-white/5 hover:border-white/30 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="github" class="w-4 h-4 text-white"></i> GitHub</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-blue-500/20 border border-white/5 hover:border-blue-400/40 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="linkedin" class="w-4 h-4 text-blue-400"></i> LinkedIn</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- DEFAREL CONTACT CARD -->
+                            <div class="tilt-card rounded-3xl bg-obsidian/90 border border-white/10 hover:border-skyblue/60 p-6 transition">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <img src="farel.jpg" alt="Defarel Permana" onerror="this.src='https://placehold.co/80x80/050a18/38bdf8?text=D'" class="w-11 h-11 rounded-xl object-cover object-center border border-skyblue/60">
+                                    <div>
+                                        <h3 class="font-bold text-white text-sm sm:text-base leading-tight">Defarel Permana</h3>
+                                        <p class="font-mono text-[11px] text-slate-400">IS &amp; Front-End Dev.</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2.5">
+                                    <a href="mailto:defarelpermana@gmail.com?subject=Kolaborasi%20DUO//SYNC%20-%20Defarel%20Permana" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-royalblue/25 border border-white/5 hover:border-skyblue/40 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-skyblue"></i> Gmail</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                    <a href="https://wa.me/6281200000002?text=Halo%20Defarel%20Permana,%20saya%20tertarik%20berkolaborasi%20melalui%20portofolio%20DUO//SYNC" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-emerald-500/15 border border-white/5 hover:border-emerald-400/40 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i> WhatsApp</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                    <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-white/10 border border-white/5 hover:border-white/30 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="github" class="w-4 h-4 text-white"></i> GitHub</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-deepnavy hover:bg-blue-500/20 border border-white/5 hover:border-blue-400/40 text-xs font-medium text-slate-200 transition">
+                                        <span class="flex items-center gap-2"><i data-lucide="linkedin" class="w-4 h-4 text-blue-400"></i> LinkedIn</span>
+                                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =====================================================================
+         FOOTER
+    ====================================================================== -->
+    <footer class="border-t border-white/10 bg-obsidian py-10">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-2 font-mono">
+                <span class="text-white font-bold">DUO<span class="text-skyblue">//</span>SYNC</span>
+                <span>— Muhammad Rafly Isman (Informatika) × Defarel Permana (Sistem Informasi)</span>
+            </div>
+            <p class="font-mono text-slate-500">Built as real evidence of collaboration &amp; engineering.</p>
+        </div>
+    </footer>
+
+    <!-- =====================================================================
+         LIGHTBOX / DETAIL INSPECTION MODAL
+    ====================================================================== -->
+    <div id="detail-modal" onclick="closeModalOnBackdrop(event)" class="fixed inset-0 z-50 hidden items-center justify-center bg-obsidian/90 backdrop-blur-xl p-4 sm:p-6">
+        <div class="relative w-full max-w-2xl rounded-3xl bg-deepnavy border border-skyblue/30 overflow-hidden shadow-2xl hud-switch-anim">
+            <button onclick="closeModal()" aria-label="Tutup Modal" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-obsidian/80 hover:bg-royalblue text-white border border-white/15 flex items-center justify-center transition cursor-pointer">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="w-full h-56 sm:h-72 bg-obsidian relative overflow-hidden">
+                <img id="modal-img" src="" alt="Preview Dokumentasi" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-deepnavy via-transparent to-transparent"></div>
+                <span id="modal-tag" class="absolute bottom-4 left-6 px-3 py-1 rounded-full bg-royalblue text-white font-mono text-xs">
+                    CATEGORY
+                </span>
+            </div>
+
+            <div class="p-6 sm:p-8">
+                <div class="flex items-center justify-between gap-2 text-xs font-mono text-skyblue mb-2">
+                    <span id="modal-owner">OWNER</span>
+                    <span id="modal-date">VERIFIED EVIDENCE</span>
+                </div>
+                <h3 id="modal-title" class="text-2xl font-bold text-white mb-3">Judul Dokumentasi</h3>
+                <p id="modal-desc" class="text-sm text-slate-300 leading-relaxed mb-5">
+                    Deskripsi lengkap dokumentasi atau proyek.
+                </p>
+                <div id="modal-specs" class="p-4 rounded-2xl bg-obsidian/80 border border-white/10 font-mono text-xs text-slate-300 space-y-1.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         JAVASCRIPT: GAME LOBBY AUDIO/FX, CURSOR TRAIL, 3D TILT & CONTENT
+    ====================================================================== -->
+    <script>
+        lucide.createIcons();
+
+        /* -------------------------------------------------------------------
+           0. WEB AUDIO API: SYNTHETIC GAME LOBBY & UI MOTION SOUND FX
+        ------------------------------------------------------------------- */
+        let audioCtx = null;
+
+        function playLobbySound(type = 'select') {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                if (type === 'enter') {
+                    // Deep Bass + Rising Sci-Fi Lobby Deploy Chord
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(110, now);
+                    osc.frequency.exponentialRampToValueAtTime(740, now + 0.48);
+
+                    gain.gain.setValueAtTime(0.09, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.52);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.55);
+                } else {
+                    // Crisp Tactical HUD Click
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(540, now);
+                    osc.frequency.exponentialRampToValueAtTime(920, now + 0.08);
+
+                    gain.gain.setValueAtTime(0.035, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                }
+            } catch (e) {}
+        }
+
+        /* -------------------------------------------------------------------
+           1. GLOBAL CURSOR MOTION TRAIL + SHOCKWAVE CLICK RIPPLE
+        ------------------------------------------------------------------- */
+        const trailCanvas = document.getElementById('motion-trail-canvas');
+        const trailCtx = trailCanvas.getContext('2d');
+        let trailPoints = [];
+        let burstSparks = [];
+
+        function resizeTrailCanvas() {
+            if (!trailCanvas) return;
+            trailCanvas.width = window.innerWidth;
+            trailCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeTrailCanvas);
+        resizeTrailCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            // Update tactical reticle
+            const cursor = document.getElementById('tactical-cursor');
+            if (cursor) {
+                cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            }
+
+            // Record cursor motion trail points
+            trailPoints.push({
+                x: e.clientX,
+                y: e.clientY,
+                life: 1.0
+            });
+            if (trailPoints.length > 24) {
+                trailPoints.shift();
+            }
+
+            // Emit subtle micro-sparks on fast mouse movement
+            if (Math.random() > 0.45) {
+                burstSparks.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    vx: (Math.random() - 0.5) * 1.8,
+                    vy: (Math.random() - 0.5) * 1.8,
+                    size: Math.random() * 2 + 0.8,
+                    life: 1.0
+                });
+            }
+        });
+
+        // Click Shockwave + Particle Burst
+        window.addEventListener('click', (e) => {
+            const wave = document.createElement('div');
+            wave.className = 'click-shockwave';
+            wave.style.left = `${e.clientX}px`;
+            wave.style.top = `${e.clientY}px`;
+            document.body.appendChild(wave);
+            setTimeout(() => wave.remove(), 620);
+
+            for (let i = 0; i < 10; i++) {
+                const angle = (Math.PI * 2 * i) / 10;
+                const speed = Math.random() * 3.5 + 1.5;
+                burstSparks.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: Math.random() * 2.5 + 1,
+                    life: 1.0
+                });
+            }
+        });
+
+        function renderMotionTrail() {
+            trailCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+
+            // Draw smooth neon ribbon trail following cursor
+            if (trailPoints.length > 1) {
+                for (let i = 1; i < trailPoints.length; i++) {
+                    const p1 = trailPoints[i - 1];
+                    const p2 = trailPoints[i];
+                    trailCtx.beginPath();
+                    trailCtx.moveTo(p1.x, p1.y);
+                    trailCtx.lineTo(p2.x, p2.y);
+                    trailCtx.strokeStyle = `rgba(56, 189, 248, ${p2.life * 0.42})`;
+                    trailCtx.lineWidth = p2.life * 4;
+                    trailCtx.lineCap = 'round';
+                    trailCtx.stroke();
+                }
+            }
+
+            // Decay trail points
+            for (let i = trailPoints.length - 1; i >= 0; i--) {
+                trailPoints[i].life -= 0.055;
+                if (trailPoints[i].life <= 0) trailPoints.splice(i, 1);
+            }
+
+            // Draw & decay sparks
+            for (let i = burstSparks.length - 1; i >= 0; i--) {
+                const s = burstSparks[i];
+                s.x += s.vx;
+                s.y += s.vy;
+                s.life -= 0.04;
+                if (s.life <= 0) {
+                    burstSparks.splice(i, 1);
+                    continue;
+                }
+                trailCtx.beginPath();
+                trailCtx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
+                trailCtx.fillStyle = `rgba(56, 189, 248, ${s.life * 0.85})`;
+                trailCtx.fill();
+            }
+
+            requestAnimationFrame(renderMotionTrail);
+        }
+        renderMotionTrail();
+
+        /* -------------------------------------------------------------------
+           2. WELCOME EXPERIENCE PARTICLE CANVAS & LOBBY DEPLOY FX
+        ------------------------------------------------------------------- */
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrameId;
+        let mouse = { x: null, y: null, radius: 145 };
+        let isWarping = false;
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.2 + 0.8;
+                this.vx = (Math.random() - 0.5) * 0.9;
+                this.vy = (Math.random() - 0.5) * 0.9;
+                this.color = Math.random() > 0.4 ? 'rgba(56, 189, 248, 0.85)' : 'rgba(30, 64, 175, 0.95)';
+            }
+
+            update() {
+                if (isWarping) {
+                    const cx = canvas.width / 2;
+                    const cy = canvas.height / 2;
+                    this.x += (this.x - cx) * 0.16;
+                    this.y += (this.y - cy) * 0.16;
+                    this.size += 0.2;
+                    return;
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouse.radius) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        this.x -= (dx / dist) * force * 2.6;
+                        this.y -= (dy / dist) * force * 2.6;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor((canvas.width * canvas.height) / 12500), 105);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            if (isWarping) return;
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a + 1; b < particles.length; b++) {
+                    const dx = particles[a].x - particles[b].x;
+                    const dy = particles[a].y - particles[b].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 135) {
+                        const opacity = 1 - dist / 135;
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.26})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            connectParticles();
+            animationFrameId = requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function enterExperience() {
+            const overlay = document.getElementById('welcome-overlay');
+            const flash = document.getElementById('lobby-flash');
+            const statusText = document.getElementById('lobby-status-text');
+            if (!overlay || overlay.classList.contains('lobby-warp-out')) return;
+
+            playLobbySound('enter');
+            isWarping = true;
+            if (statusText) statusText.textContent = 'DEPLOYING INTO ARENA // 3... 2... 1...';
+
+            if (flash) {
+                flash.classList.remove('lobby-flash-active');
+                void flash.offsetWidth;
+                flash.classList.add('lobby-flash-active');
+            }
+
+            setTimeout(() => {
+                overlay.classList.add('lobby-warp-out');
+                document.body.classList.add('lobby-entered');
+            }, 220);
+
+            // Trigger landing impact shake when characters drop into the lobby
+            setTimeout(() => {
+                document.body.classList.add('impact-shake');
+                setTimeout(() => document.body.classList.remove('impact-shake'), 500);
+            }, 680);
+
+            setTimeout(() => {
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                isWarping = false;
+                if (statusText) statusText.textContent = 'MATCHMAKING COMPLETE // SQUAD READY';
+            }, 1150);
+        }
+
+        function reopenSplash() {
+            const overlay = document.getElementById('welcome-overlay');
+            if (overlay) {
+                playLobbySound('select');
+                isWarping = false;
+                document.body.classList.remove('lobby-entered');
+                overlay.classList.remove('lobby-warp-out');
+                resizeCanvas();
+                animateParticles();
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            const overlay = document.getElementById('welcome-overlay');
+            if (e.key === 'Enter' && overlay && !overlay.classList.contains('lobby-warp-out')) {
+                enterExperience();
+            }
+            if (e.key === 'Escape') closeModal();
+        });
+
+        resizeCanvas();
+        animateParticles();
+
+        /* -------------------------------------------------------------------
+           3. 3D PERSPECTIVE TILT & HOLOGRAPHIC GLARE ON CARDS
+        ------------------------------------------------------------------- */
+        function bindTiltCards() {
+            const cards = document.querySelectorAll('.tilt-card');
+            cards.forEach(card => {
+                if (card.dataset.tiltBound) return;
+                card.dataset.tiltBound = 'true';
+
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -6.5;
+                    const rotateY = ((x - centerX) / centerX) * 6.5;
+
+                    card.style.setProperty('--mx', `${(x / rect.width) * 100}%`);
+                    card.style.setProperty('--my', `${(y / rect.height) * 100}%`);
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+                });
+            });
+        }
+
+        /* -------------------------------------------------------------------
+           4. SCROLL VELOCITY KINETIC MOTION & PARALLAX ORBS
+        ------------------------------------------------------------------- */
+        let lastScrollY = window.scrollY;
+        let scrollVelocity = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            scrollVelocity = currentScrollY - lastScrollY;
+            lastScrollY = currentScrollY;
+
+            // Update Top HUD Scroll Bar & Telemetry
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? Math.min(Math.round((currentScrollY / docHeight) * 100), 100) : 0;
+            const bar = document.getElementById('hud-scroll-bar');
+            const pctEl = document.getElementById('hud-scroll-pct');
+            const velEl = document.getElementById('hud-scroll-vel');
+
+            if (bar) bar.style.width = `${pct}%`;
+            if (pctEl) pctEl.textContent = `${pct}%`;
+            if (velEl) {
+                const absVel = Math.min(Math.abs(Math.round(scrollVelocity)), 99);
+                velEl.textContent = absVel > 1 ? `${absVel} PX/F` : 'IDLE';
+            }
+
+            // Parallax background orbs
+            document.querySelectorAll('.parallax-orb').forEach(orb => {
+                const speed = parseFloat(orb.dataset.parallax || 0.1);
+                orb.style.transform = `translate3d(0, ${currentScrollY * speed}px, 0)`;
+            });
+
+            // Subtle kinetic skew on grids
+            const clampedSkew = Math.max(Math.min(scrollVelocity * 0.045, 2.2), -2.2);
+            document.querySelectorAll('.scroll-kinetic').forEach(el => {
+                el.style.transform = `skewY(${clampedSkew}deg)`;
+            });
+        }, { passive: true });
+
+        setInterval(() => {
+            if (Math.abs(scrollVelocity) > 0.1) {
+                scrollVelocity *= 0.8;
+                if (Math.abs(scrollVelocity) < 0.2) {
+                    scrollVelocity = 0;
+                    const velEl = document.getElementById('hud-scroll-vel');
+                    if (velEl) velEl.textContent = 'IDLE';
+                    document.querySelectorAll('.scroll-kinetic').forEach(el => {
+                        el.style.transform = 'skewY(0deg)';
+                    });
+                }
+            }
+        }, 50);
+
+        /* -------------------------------------------------------------------
+           5. INTERACTIVE IDENTITY SWITCHER (RAFLY <-> DEFAREL)
+        ------------------------------------------------------------------- */
+        const identities = {
+            rafly: {
+                displayName: 'Muhammad<br>Rafly Isman<span class="text-skyblue">.</span>',
+                badge: 'S1 INFORMATIKA • INFRASTRUCTURE & SECURITY',
+                fullname: 'Muhammad Rafly Isman — Network & Cloud Specialist',
+                summary: 'Berfokus pada arsitektur jaringan skala enterprise, virtualisasi server, otomasi cloud, serta pertahanan keamanan siber berbasis lab dan pengalaman infrastruktur nyata.',
+                pillars: [
+                    { icon: 'server', text: 'Routing, Switching, VLAN & Enterprise Network Lab (Cisco/MikroTik)' },
+                    { icon: 'cloud', text: 'Linux Server Administration, Docker & Cloud Deployment' },
+                    { icon: 'shield-check', text: 'Firewall Hardening, Network Monitoring & Cybersecurity' }
+                ],
+                cardLabel: 'LOADOUT // MUHAMMAD RAFLY ISMAN',
+                cardTitle: 'Infrastructure & Security Engineering',
+                cardText: 'Fokus pada keandalan jaringan, Linux server, dan keamanan infrastruktur untuk menopang aplikasi modern.'
+            },
+            defarel: {
+                displayName: 'Defarel<br>Permana<span class="text-skyblue">.</span>',
+                badge: 'S1 SISTEM INFORMASI • IS & FRONT-END DEV',
+                fullname: 'Defarel Permana — Systems Analyst & Front-End Dev.',
+                summary: 'Menggabungkan analisis proses bisnis dengan rekayasa antarmuka web modern untuk menghasilkan sistem informasi yang terstruktur, efisien, dan berorientasi pengguna.',
+                pillars: [
+                    { icon: 'database', text: 'Information Systems Analysis, BPMN & Database Design (SQL)' },
+                    { icon: 'layout', text: 'Modern Front-End Engineering (Tailwind CSS, JS & UI/UX)' },
+                    { icon: 'briefcase', text: 'Business Technology Integration & Digital Workflow' }
+                ],
+                cardLabel: 'LOADOUT // DEFAREL PERMANA',
+                cardTitle: 'Information Systems & Digital Experience',
+                cardText: 'Menjembatani logika bisnis, arsitektur basis data, dan antarmuka web intuitif yang siap dipakai pengguna.'
+            }
+        };
+
+        let currentIdentity = 'rafly';
+
+        function selectIdentity(key) {
+            playLobbySound('select');
+            currentIdentity = key;
+            const data = identities[key];
+
+            const heroName = document.getElementById('hero-display-name');
+            const detailBox = document.getElementById('identity-detail-box');
+            heroName.innerHTML = data.displayName;
+            document.getElementById('id-badge').textContent = data.badge;
+            document.getElementById('id-fullname').textContent = data.fullname;
+            document.getElementById('id-summary').textContent = data.summary;
+
+            const pillarsHtml = data.pillars.map(p => `
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="${p.icon}" class="w-4 h-4 text-skyblue shrink-0"></i>
+                    <span>${p.text}</span>
+                </div>
+            `).join('');
+            document.getElementById('id-pillars').innerHTML = pillarsHtml;
+
+            document.getElementById('about-card-label').textContent = data.cardLabel;
+            document.getElementById('about-card-title').textContent = data.cardTitle;
+            document.getElementById('about-card-text').textContent = data.cardText;
+
+            detailBox.classList.remove('hud-switch-anim');
+            void detailBox.offsetWidth;
+            detailBox.classList.add('hud-switch-anim');
+
+            const btnRafly = document.getElementById('btn-select-rafly');
+            const btnDefarel = document.getElementById('btn-select-defarel');
+            const cardRafly = document.getElementById('card-rafly');
+            const cardDefarel = document.getElementById('card-defarel');
+            const statusRafly = document.getElementById('status-rafly');
+            const statusDefarel = document.getElementById('status-defarel');
+
+            if (key === 'rafly') {
+                btnRafly.className = 'px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-royalblue text-white shadow-md cursor-pointer';
+                btnDefarel.className = 'px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white cursor-pointer';
+                cardRafly.classList.add('active-card');
+                cardRafly.classList.remove('inactive-card');
+                cardDefarel.classList.remove('active-card');
+                cardDefarel.classList.add('inactive-card');
+                statusRafly.textContent = '● SELECTED PLAYER';
+                statusRafly.className = 'text-emerald-400';
+                statusDefarel.textContent = '○ CLICK TO SELECT';
+                statusDefarel.className = 'text-skyblue';
+            } else {
+                btnDefarel.className = 'px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-royalblue text-white shadow-md cursor-pointer';
+                btnRafly.className = 'px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white cursor-pointer';
+                cardDefarel.classList.add('active-card');
+                cardDefarel.classList.remove('inactive-card');
+                cardRafly.classList.remove('active-card');
+                cardRafly.classList.add('inactive-card');
+                statusDefarel.textContent = '● SELECTED PLAYER';
+                statusDefarel.className = 'text-emerald-400';
+                statusRafly.textContent = '○ CLICK TO SELECT';
+                statusRafly.className = 'text-skyblue';
+            }
+
+            lucide.createIcons();
+        }
+
+        function nextIdentity() {
+            selectIdentity(currentIdentity === 'rafly' ? 'defarel' : 'rafly');
+        }
+        function prevIdentity() {
+            selectIdentity(currentIdentity === 'rafly' ? 'defarel' : 'rafly');
+        }
+
+        /* -------------------------------------------------------------------
+           6. DOCUMENTATION GALLERY DATA & RENDERING
+        ------------------------------------------------------------------- */
+        const galleryItems = [
+            {
+                id: 1,
+                category: 'network',
+                tag: 'SIMULASI JARINGAN & LAB',
+                owner: 'Muhammad Rafly Isman',
+                title: 'Enterprise Multi-VLAN & OSPF Lab Topology',
+                desc: 'Simulasi arsitektur jaringan kampus/perusahaan menggunakan Router Core, Distribution Switch, segmentasi VLAN departemen, serta dynamic routing OSPF dengan failover link.',
+                specs: ['Tools: Cisco Packet Tracer / GNS3', 'Protokol: IEEE 802.1Q VLAN, OSPF, DHCP Relay, ACL', 'Hasil: Konvergensi routing < 2 detik tanpa packet loss'],
+                image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80'
+            },
+            {
+                id: 2,
+                category: 'work',
+                tag: 'HASIL KERJA & UI/UX',
+                owner: 'Defarel Permana',
+                title: 'Information System Wireframe & ERP Dashboard',
+                desc: 'Perancangan alur proses bisnis (BPMN) dan antarmuka dashboard manajemen inventaris & transaksi terintegrasi dengan fokus pada kecepatan input dan kejelasan visual.',
+                specs: ['Tools: Figma, Tailwind CSS, JavaScript', 'Artefak: Use Case, ERD 3NF, High-Fidelity Prototype', 'Hasil: Pengurangan langkah input operasional hingga 40%'],
+                image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80'
+            },
+            {
+                id: 3,
+                category: 'network',
+                tag: 'CLOUD & SERVER DEPLOYMENT',
+                owner: 'Muhammad Rafly Isman',
+                title: 'Linux VPS Hardening & Docker Reverse Proxy',
+                desc: 'Konfigurasi server produksi berbasis Ubuntu Server menggunakan kontainerisasi Docker, Nginx Reverse Proxy, SSL/TLS otomatis, dan firewall UFW.',
+                specs: ['Stack: Ubuntu Linux, Docker Compose, Nginx, UFW', 'Keamanan: SSH Key-Only Auth, Fail2Ban, HTTPS Enforcement', 'Hasil: Uptime stabil 99.9% untuk hosting aplikasi kolaborasi'],
+                image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=900&q=80'
+            },
+            {
+                id: 4,
+                category: 'certificate',
+                tag: 'SERTIFIKAT & KOMPETENSI',
+                owner: 'Muhammad Rafly Isman',
+                title: 'Networking, Linux & Cloud Fundamentals Certification',
+                desc: 'Dokumentasi pencapaian pembelajaran terstruktur pada bidang administrasi jaringan komputer, sistem operasi Linux, dan keamanan infrastruktur dasar.',
+                specs: ['Bidang: Computer Networking, Linux Essentials, Cloud Infra', 'Verifikasi: Kredensial Pelatihan & Praktikum Lab', 'Status: Terverifikasi & Diaplikasikan pada Proyek'],
+                image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=900&q=80'
+            },
+            {
+                id: 5,
+                category: 'certificate',
+                tag: 'SERTIFIKAT & BELAJAR',
+                owner: 'Defarel Permana',
+                title: 'Systems Analysis, SQL & Front-End Web Certification',
+                desc: 'Sertifikasi kompetensi perancangan basis data relasional, analisis kebutuhan perangkat lunak, serta pengembangan web responsif modern.',
+                specs: ['Bidang: Database Design, Front-End Web Dev, UI/UX', 'Verifikasi: Studi Kasus & Evaluasi Proyek Akhir', 'Status: Terverifikasi & Diaplikasikan pada Proyek'],
+                image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80'
+            },
+            {
+                id: 6,
+                category: 'work',
+                tag: 'AKTIVITAS KOLABORASI',
+                owner: 'DUO//SYNC (Rafly × Defarel)',
+                title: 'End-to-End Architecture & Sprint Sync Session',
+                desc: 'Dokumentasi sesi sinkronisasi arsitektur antara tim infrastruktur dan tim sistem informasi: menghubungkan API front-end ke server Linux yang diamankan.',
+                specs: ['Kolaborasi: Integration Testing & Deployment Pipeline', 'Metode: Agile Sprint, Git Version Control, Live Demo', 'Output: Platform Portofolio & Sistem Monitoring Terpadu'],
+                image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80'
+            }
+        ];
+
+        function renderGallery(filter = 'all') {
+            const track = document.getElementById('gallery-track');
+            const filtered = filter === 'all' ? galleryItems : galleryItems.filter(item => item.category === filter);
+
+            track.innerHTML = filtered.map(item => `
+                <article onclick="openGalleryModal(${item.id})" class="tilt-card snap-start shrink-0 w-[300px] sm:w-[370px] rounded-3xl bg-deepnavy/90 border border-white/10 hover:border-skyblue/60 overflow-hidden group cursor-pointer transition-all duration-300 flex flex-col justify-between shadow-xl">
+                    <div>
+                        <div class="relative h-48 w-full overflow-hidden bg-obsidian">
+                            <img src="${item.image}" alt="${item.title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-deepnavy via-deepnavy/20 to-transparent"></div>
+                            <span class="absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-obsidian/85 backdrop-blur-md border border-skyblue/30 font-mono text-[10px] text-skyblue">
+                                ${item.tag}
+                            </span>
+                            <span class="absolute bottom-3 right-3.5 w-8 h-8 rounded-full bg-royalblue/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                                <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                            </span>
+                        </div>
+                        <div class="p-6">
+                            <div class="font-mono text-[11px] text-skyblue mb-1.5">${item.owner}</div>
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-skyblue transition-colors leading-snug">${item.title}</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed line-clamp-3">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-5 pt-2 flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-white/5">
+                        <span>Klik untuk inspeksi detail</span>
+                        <span class="text-skyblue">EVIDENCE →</span>
+                    </div>
+                </article>
+            `).join('');
+
+            lucide.createIcons();
+            bindTiltCards();
+        }
+
+        function filterGallery(category, btn) {
+            playLobbySound('select');
+            document.querySelectorAll('.gallery-filter-btn').forEach(b => {
+                b.className = 'gallery-filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer';
+            });
+            btn.className = 'gallery-filter-btn active px-4 py-2 rounded-full text-xs font-semibold bg-royalblue text-white border border-royalblue transition cursor-pointer';
+            renderGallery(category);
+        }
+
+        function scrollGallery(direction) {
+            playLobbySound('select');
+            const track = document.getElementById('gallery-track');
+            track.scrollBy({ left: direction * 390, behavior: 'smooth' });
+        }
+
+        function openGalleryModal(id) {
+            playLobbySound('select');
+            const item = galleryItems.find(g => g.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-img').src = item.image;
+            document.getElementById('modal-tag').textContent = item.tag;
+            document.getElementById('modal-owner').textContent = item.owner;
+            document.getElementById('modal-date').textContent = 'DOCUMENTED EVIDENCE';
+            document.getElementById('modal-title').textContent = item.title;
+            document.getElementById('modal-desc').textContent = item.desc;
+            document.getElementById('modal-specs').innerHTML = item.specs.map(s => `<div>• ${s}</div>`).join('');
+
+            const modal = document.getElementById('detail-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        /* -------------------------------------------------------------------
+           7. ACHIEVEMENT & PROJECTS DATA & FILTERING
+        ------------------------------------------------------------------- */
+        const projectsData = [
+            {
+                id: 101,
+                track: 'duo',
+                badge: 'DUO COLLABORATION',
+                owner: 'Muhammad Rafly Isman × Defarel Permana',
+                title: 'NetPulse — Real-Time Server & Network Monitoring Web',
+                desc: 'Dashboard pemantauan kesehatan server, latensi ping, dan status layanan jaringan. Defarel merancang antarmuka visualisasi interaktif, sementara Rafly membangun agen pemantau Linux & keamanan API.',
+                tags: ['Linux Agent', 'REST API', 'Tailwind UI', 'Network Ops'],
+                image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80',
+                specs: ['Arsitektur: Linux Python/Bash Telemetry + Modern Web Dashboard', 'Peran Rafly: Server Metrics Collector, Nginx Reverse Proxy & Firewall', 'Peran Defarel: Information Architecture, Data Visualization & Front-End']
+            },
+            {
+                id: 102,
+                track: 'duo',
+                badge: 'DUO COLLABORATION',
+                owner: 'Muhammad Rafly Isman × Defarel Permana',
+                title: 'CampusFlow — Sistem Informasi Layanan & Cloud Hosting',
+                desc: 'Platform digitalisasi administrasi kegiatan mahasiswa yang di-deploy di atas infrastruktur VPS Linux dengan kontainer Docker dan sertifikat SSL otomatis.',
+                tags: ['Docker', 'Nginx', 'Information System', 'SQL'],
+                image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
+                specs: ['Arsitektur: Containerized Web App + Relational Database', 'Peran Rafly: VPS Provisioning, Docker Compose & Automated Backup', 'Peran Defarel: BPMN Workflow, ERD Database & Responsive Interface']
+            },
+            {
+                id: 103,
+                track: 'rafly',
+                badge: 'INFRA & SECURITY',
+                owner: 'Muhammad Rafly Isman',
+                title: 'Multi-Branch Enterprise Network & Firewall Architecture',
+                desc: 'Rancangan jaringan kantor pusat dan cabang dengan segmentasi VLAN, Inter-VLAN Routing, OSPF, NAT, serta kebijakan Access Control List (ACL) untuk isolasi trafik sensitif.',
+                tags: ['Cisco / MikroTik', 'VLAN & OSPF', 'ACL Security'],
+                image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80',
+                specs: ['Topologi: Core-Distribution-Access 3-Tier Architecture', 'Fitur: Redundant Link, DHCP Snooping, Port Security', 'Dokumentasi: Skema IP Addressing Subnetting & Tabel Routing']
+            },
+            {
+                id: 104,
+                track: 'rafly',
+                badge: 'CLOUD & LINUX',
+                owner: 'Muhammad Rafly Isman',
+                title: 'Automated Linux Server Hardening & Audit Script',
+                desc: 'Kumpulan skrip otomasi Bash untuk konfigurasi keamanan awal server Ubuntu/Debian: pengaturan SSH non-standard, UFW firewall rules, dan pemantauan log intrusi.',
+                tags: ['Bash Scripting', 'Ubuntu Server', 'Cybersecurity'],
+                image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=900&q=80',
+                specs: ['Target OS: Ubuntu 22.04 / 24.04 LTS & Debian', 'Fitur: Auto-Update Security Patch, Fail2Ban Jail, SSH Hardening', 'Dampak: Mempercepat waktu provisioning server aman hingga 70%']
+            },
+            {
+                id: 105,
+                track: 'defarel',
+                badge: 'SYSTEMS ANALYSIS',
+                owner: 'Defarel Permana',
+                title: 'SmartInventory — Sistem Informasi Manajemen Stok UMKM',
+                desc: 'Analisis kebutuhan bisnis dan perancangan sistem pencatatan barang masuk-keluar, prediksi restock minimum, serta laporan keuangan ringkas berbasis web.',
+                tags: ['BPMN & SRS', 'ERD SQL', 'Front-End Dev'],
+                image: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=900&q=80',
+                specs: ['Metodologi: SDLC Waterfall / Agile Hybrid', 'Deliverables: Dokumen SRS, Diagram BPMN, Prototipe UI Interaktif', 'Fokus: Kemudahan penggunaan bagi staf non-teknis']
+            },
+            {
+                id: 106,
+                track: 'defarel',
+                badge: 'UI/UX & FRONT-END',
+                owner: 'Defarel Permana',
+                title: 'Executive Analytics & Academic Portal UI Kit',
+                desc: 'Sistem desain komponen antarmuka modern (Design System) untuk portal akademik dan dashboard eksekutif dengan dukungan mode gelap dan aksesibilitas tinggi.',
+                tags: ['Design System', 'Tailwind CSS', 'UI/UX'],
+                image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80',
+                specs: ['Komponen: 25+ Modular UI Cards, Data Tables & Navigation', 'Standar: Responsive Mobile-First & Semantic HTML5', 'Fokus: Konsistensi visual dan kecepatan rendering halaman']
+            }
+        ];
+
+        function renderProjects(filter = 'all') {
+            const grid = document.getElementById('projects-grid');
+            const filtered = filter === 'all' ? projectsData : projectsData.filter(p => p.track === filter);
+
+            grid.innerHTML = filtered.map(p => `
+                <article onclick="openProjectModal(${p.id})" class="tilt-card rounded-3xl bg-deepnavy/80 border border-white/10 hover:border-skyblue/60 overflow-hidden group cursor-pointer transition-all duration-300 flex flex-col justify-between shadow-lg">
+                    <div>
+                        <div class="relative h-44 w-full overflow-hidden bg-obsidian">
+                            <img src="${p.image}" alt="${p.title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-deepnavy via-deepnavy/30 to-transparent"></div>
+                            <span class="absolute top-3.5 left-3.5 px-3 py-1 rounded-full ${p.track === 'duo' ? 'bg-royalblue text-white' : 'bg-obsidian/85 text-skyblue border border-skyblue/30'} font-mono text-[10px] font-semibold">
+                                ${p.badge}
+                            </span>
+                        </div>
+
+                        <div class="p-6">
+                            <p class="font-mono text-[11px] text-skyblue mb-1.5">${p.owner}</p>
+                            <h3 class="text-lg font-bold text-white mb-2.5 group-hover:text-skyblue transition-colors leading-snug">${p.title}</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">${p.desc}</p>
+                        </div>
+                    </div>
+
+                    <div class="px-6 pb-6">
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            ${p.tags.map(t => `<span class="px-2.5 py-1 rounded-md bg-obsidian border border-white/10 font-mono text-[10px] text-slate-300">${t}</span>`).join('')}
+                        </div>
+                        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-skyblue">
+                            <span>Lihat Arsitektur &amp; Detail</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            lucide.createIcons();
+            bindTiltCards();
+        }
+
+        function filterProjects(track, btn) {
+            playLobbySound('select');
+            document.querySelectorAll('.project-tab-btn').forEach(b => {
+                b.className = 'project-tab-btn px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-deepnavy text-slate-300 border border-white/10 hover:border-skyblue/40 transition cursor-pointer';
+            });
+            btn.className = 'project-tab-btn active px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-royalblue text-white shadow-lg transition cursor-pointer';
+            renderProjects(track);
+        }
+
+        function openProjectModal(id) {
+            playLobbySound('select');
+            const p = projectsData.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('modal-img').src = p.image;
+            document.getElementById('modal-tag').textContent = p.badge;
+            document.getElementById('modal-owner').textContent = p.owner;
+            document.getElementById('modal-date').textContent = 'PROJECT CASE STUDY';
+            document.getElementById('modal-title').textContent = p.title;
+            document.getElementById('modal-desc').textContent = p.desc;
+            document.getElementById('modal-specs').innerHTML = p.specs.map(s => `<div>• ${s}</div>`).join('');
+
+            const modal = document.getElementById('detail-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('detail-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'detail-modal') closeModal();
+        }
+
+        /* -------------------------------------------------------------------
+           8. NAVIGATION, COPY EMAIL & SCROLL REVEAL OBSERVER
+        ------------------------------------------------------------------- */
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function copyCollabEmail() {
+            playLobbySound('select');
+            navigator.clipboard.writeText('duosync.collab@gmail.com').then(() => {
+                const label = document.getElementById('copy-label');
+                label.textContent = 'Tersalin!';
+                setTimeout(() => { label.textContent = 'Salin Email'; }, 2200);
+            });
+        }
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(sec => {
+                const top = sec.offsetTop - 160;
+                if (window.scrollY >= top) current = sec.getAttribute('id');
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('bg-royalblue', 'text-white');
+                link.classList.add('text-slate-300');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('bg-royalblue', 'text-white');
+                    link.classList.remove('text-slate-300');
+                }
+            });
+        });
+
+        // Initial Render
+        renderGallery('all');
+        renderProjects('all');
+        bindTiltCards();
+    </script>
+</body>
+</html>
